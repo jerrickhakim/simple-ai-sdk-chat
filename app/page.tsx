@@ -25,17 +25,19 @@ export default function Chat() {
   }, [messages]);
 
   // If you want to auto scroll to bottom use this and uncomment the requestAnimationFrame in submit
-  useEffect(() => {
-    scrollToBottom("smooth");
-  }, [lastMessage]);
+  // useEffect(() => {
+  //   scrollToBottom("smooth");
+  // }, [lastMessage]);
 
-  // Auto-resize textarea on value changes (typing/paste/programmatic)
+  // Auto-resize textarea up to a max height, then allow scrolling
   useLayoutEffect(() => {
     const el = textAreaRef.current;
     if (!el) return;
+    const MAX_TEXTAREA_HEIGHT_PX = 300;
     el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
-    el.style.overflowY = "hidden";
+    const nextHeight = Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT_PX);
+    el.style.height = `${nextHeight}px`;
+    el.style.overflowY = el.scrollHeight > MAX_TEXTAREA_HEIGHT_PX ? "auto" : "hidden";
   }, [input]);
 
   const submit = () => {
@@ -44,7 +46,7 @@ export default function Chat() {
     sendMessage({ text });
     setInput("");
     // Scroll after React paints the new message
-    // requestAnimationFrame(() => scrollToBottom("smooth"));
+    requestAnimationFrame(() => scrollToBottom("smooth"));
   };
 
   return (
@@ -63,7 +65,7 @@ export default function Chat() {
       </div>
 
       {/* Input */}
-      <div className="relative">
+      <div className="relative bottom-0 left-0 right-0">
         <div className="max-w-2xl mx-auto my-2 p-2 backdrop-blur-xl bg-card/80 rounded-2xl">
           <form
             onSubmit={(e) => {
@@ -72,7 +74,7 @@ export default function Chat() {
             }}
             className="w-full flex flex-col"
           >
-            <div className="p-[.5px] rounded-t-2xl relative">
+            <div className="flex flex-col items-end overflow-x-hidden h-full max-h-[300px] transition-all duration-300 relative p-[.5px] rounded-2xl border border-zinc-800">
               <textarea
                 ref={textAreaRef}
                 rows={2}
@@ -84,11 +86,11 @@ export default function Chat() {
                     submit();
                   }
                 }}
-                className="w-full rounded-t-2xl focus:outline-none p-3 resize-none scrollbar-hide overflow-hidden"
+                className="w-full rounded-t-2xl focus:outline-none p-3 resize-none overflow-y-auto text-ellipsis max-h-[300px]"
                 placeholder="Type your message..."
               />
 
-              <div className="absolute bottom-0 right-0">
+              <div className="absolute bottom-1 right-1">
                 {status === "streaming" ? (
                   <button type="button" className="py-1 px-2 rounded-lg text-sm bg-red-500 text-primary-foreground" onClick={stop}>
                     Stop
