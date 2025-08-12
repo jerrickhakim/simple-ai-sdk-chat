@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Simple AI SDK Chat
 
-## Getting Started
+A minimal Next.js chat app using the Vercel AI SDK and Vercel AI Gateway.
 
-First, run the development server:
+### Features
+
+- **Smooth message scrolling**: Chat view keeps the latest messages in view.
+- **Auto‑resize textarea**: Input grows with content for a better typing experience.
+
+## Requirements
+
+- Node.js and npm installed.
+- A Vercel AI Gateway API Key.
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create an `.env.local` file in the project root and set your gateway key:
+
+```bash
+AI_GATEWAY_API_KEY=YOUR_AI_GATEWAY_API_KEY
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` to use the chat.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The API route streams responses using the AI SDK and the Vercel AI Gateway. The default model is `openai/gpt-4.1-nano` and can be changed in `app/api/chat/route.ts`.
 
-## Learn More
+```ts
+// app/api/chat/route.ts (excerpt)
+const result = streamText({
+  model: "openai/gpt-4.1-nano",
+  messages: convertToModelMessages(messages),
+});
+```
 
-To learn more about Next.js, take a look at the following resources:
+Learn more in the Vercel docs: [Vercel AI Gateway docs](https://vercel.com/docs/ai/ai-gateway).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev`: Start the development server
+- `npm run build`: Build for production
+- `npm start`: Start the production server
+- `npm run lint`: Lint the project
 
-## Deploy on Vercel
+## Troubleshooting
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **401 Unauthorized**: Ensure `AI_GATEWAY_API_KEY` is set in `.env.local` and the server was restarted.
+- **429 / Rate limits**: Check your Vercel AI Gateway plan/quotas.
+- **No responses streaming**: Verify network calls to `/api/chat` and your gateway configuration.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
