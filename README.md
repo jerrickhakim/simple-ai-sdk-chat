@@ -7,6 +7,10 @@ A minimal Next.js chat app using the Vercel AI SDK and Vercel AI Gateway.
 - **Smooth message scrolling**: Chat view keeps the latest messages in view.
 - **Auto‑resize textarea**: Input grows with content for a better typing experience.
 
+## Demo
+
+[Watch video demo](https://clipreply.com/video/HjDgZQmQ1HRBJZg2niMn/hj2_6vNo42)
+
 ## Requirements
 
 - Node.js and npm installed.
